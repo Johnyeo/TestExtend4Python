@@ -14,3 +14,12 @@ pro_dns_ok_used_at_test = True
 
 cookieSavedFile = "business"
 cookieTxtName = 'cookies.txt'
+
+# 是否打印日志
+printLog = True
+
+# 是否生成测试报告
+generateReport = False
+
+# 是否在控制台输出日志
+outputLog = True
