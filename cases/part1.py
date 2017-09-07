@@ -6,7 +6,7 @@ from selenium.common.exceptions import NoSuchElementException
 
 from business import util_methods
 from business.TestBase import TestBase
-from business.part1 import Login
+from business.part1 import Login, UseCookie
 from settings.properties import *
 import settings.configs
 
@@ -33,7 +33,6 @@ class test_login(TestBase):
     def test0120_new_video(self):
         # 登录
         Login(self.driver, adminLogin, admin['name'], admin['pwd'])
-        sleep(ave)
         self.assertTrue(self.driver.title == '视频管理-云上国学',msg='验证失败，页面未跳转到视频管理 page redirect failed')
         sleep(ave)
 
@@ -91,7 +90,8 @@ class test_login(TestBase):
             self.assertTrue(True, msg="标签删除成功 tag deleted")
         sleep(ave)
 
-        self.driver.find_element_by_id('bq_' + serie_tagid1).click()
+        self.driver.find_element_by_class_name('lm-bqmc').click()
+        sleep(short)
         try:
             self.driver.find_element_by_class_name('lm-bqxz-xzbq')
         except NoSuchElementException as e:
@@ -118,11 +118,27 @@ class test_login(TestBase):
         # 登录
         Login(self.driver, adminLogin, admin['name'], admin['pwd'])
         sleep(ave)
-        self.driver.find_element_by_id('jcgl').click()
+        self.driver.find_element_by_id('zbgl').click()
         sleep(ave)
         self.assertTrue(self.driver.title == '直播管理-云上国学', msg='验证失败，页面未跳转到直播管理 page redirect failed')
         sleep(ave)
-        sleep(ave)
+
+    def test0150_new_book(self):
+        UseCookie(self.driver,adminLogin,admin['name'],admin['pwd']).login()
+        sleep(long)
+
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(test_login('test0150_new_book'))
+    # suite.addTest(test_login('test_003_openIM2'))
+    print("the coding is running here... ...")
+    return suite
+
+
+if __name__ == "__main__":
+    result = unittest.TestResult()
+    suite().run(result)
 
 
 

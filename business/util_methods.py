@@ -24,8 +24,8 @@ def switch_window_to(driver, target_page_title):
             break
 
 # 运行某个文件
-def openProjectFileAt(current,file_path):
-    new = os.path.abspath(os.path.join(current, os.pardir))  # 获取上一级目录
+def openProjectFileAt(currentpath,file_path):
+    new = os.path.abspath(os.path.join(currentpath, os.pardir))  # 获取上一级目录
     new2 = os.path.join(new, file_path)  # 拼接上脚本的路径
     subprocess.Popen(new2)
 
@@ -54,6 +54,7 @@ def gen_name(param):
     return None
 
 # 从古诗文网的名句页爬取古诗,第一个参数是页数，第二个参数是条数。p如果超过范围，则随机一个。num大于1则生产一个list
+# 爬取古诗的作为文件的随机名字
 def getPoem(p = 0, num = 1):
     #  p是古诗文网的页数,114页一共
     #  如果p = 0 则传入随机数。如果p = 具体数字则传入具体的数字
@@ -93,10 +94,5 @@ def splitPoem(tar_str):
     result = tar_str.split()
     return result
 
-# s = getPoem(2,10)
-# s = getPoem()
-# ss = splitPoem(s)
-#
-# print (s)
-# print (ss)
+
 
