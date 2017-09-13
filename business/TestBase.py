@@ -2,12 +2,20 @@
 import time
 import unittest
 
+import logging
 from selenium import webdriver
 
 from settings import properties, configs, changeDNS
 
 
 class TestBase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        if configs.printLog == True:
+            logging.basicConfig(filename=configs.log_file, level=logging.INFO, format = '%(asctime)s - %(levelname)s:%(messages)s')
+        else:
+            pass
+
     def setUp(self):
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(5)

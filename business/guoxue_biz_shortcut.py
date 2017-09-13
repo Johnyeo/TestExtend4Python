@@ -4,11 +4,27 @@ from time import sleep
 
 import simplejson
 
+from business import util_methods
 from settings.configs import cookieSavedFile, cookieTxtName
+
+import os
+from time import sleep
+
+import logging
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
+
+from business import util_methods
+from settings.properties import *
+import settings.configs
+
+ave = configs.ave_wait
+short = configs.short_wait
+long = configs.long_wait
 
 
 class Login(object):
-    def __init__(self, driver, url, name, password = '111111'):
+    def __init__(self, driver, url, name, password='111111'):
         self.driver = driver
         self.driver.get(url)
 
@@ -24,22 +40,22 @@ class Login(object):
             self.driver.find_element_by_id('hp-qtdlBtn').click()
             sleep(2)
 
-
 COOKIES = []
+
 class UseCookie(object):
-    def __init__(self, driver, url, name, password = '111111'):
+    def __init__(self, driver, url, name, password='111111'):
         self.driver = driver
         self.url = url
         self.name = name
         self.password = password
         # 判断前后台账号
-        if self.url.find('admin')!= -1:
+        if self.url.find('admin') != -1:
             self.accountType = 'admin'
         else:
             self.accountType = 'user'
 
     # 用cookie登录。如果cookie没保存则重新登录保存
-    def login(self,target_url = None):
+    def login(self, target_url=None):
         # 目标跳转url如果为空，那就默认用类里面的url。
         if target_url == None:
             target_url = self.url
@@ -64,7 +80,7 @@ class UseCookie(object):
             rw_cookies().rewrite_cookies(self.transfer_cookie_dict_to_str(COOKIES))
 
     def login_to_save_users_cookie(self):
-        Login(self.driver,self.url,self.name,self.password)
+        Login(self.driver, self.url, self.name, self.password)
         sleep(2)
         COOKIES = self.driver.get_cookies()
         self.save_cookies_into_txt(COOKIES)
@@ -89,6 +105,7 @@ class UseCookie(object):
     def transfer_cookie_dict_to_str(self, cookie_dict):
         cookie_str = simplejson.dumps(cookie_dict)
         return cookie_str
+
 
 # 读写和判断cookie.txt
 # 这里经过考虑，cookie和case存在一起比较方便。要删除很多以前写的代码有点心疼。
@@ -135,5 +152,94 @@ class rw_cookies(object):
                 f.write(cookie_str)
 
 
+class NewVideo(object):
+    def __init__(self, driver):
+        self.driver = driver
 
+    def build(self, type1 = None, type2 = None):
+        name_str = util_methods.getPoem()
+        name_str_ls = util_methods.splitPoem(name_str)
 
+        Login(self.driver, adminLogin, admin['name'], admin['pwd'])
+        sleep(ave)
+
+        # 进入新建页面
+        self.driver.find_element_by_id('spgl_tj').click()
+        sleep(short)
+
+        # 上传视频
+        self.driver.find_element_by_id('uploadbtn_upload').click()
+        sleep(ave)
+        util_methods.uploadFile('mp4')
+        sleep(long)
+        print("上传视频ok")
+
+        # 自定义文件名
+        self.driver.find_element_by_id('wd_checkBox_isused_1').click()
+        sleep(ave)
+        coursename = self.driver.find_element_by_id('coursename')
+        coursename.clear()
+        coursename.send_keys(name_str_ls[0])
+        sleep(long)
+        print("自定义文件名ok")
+
+        # 上传封面
+        self.driver.find_element_by_id('sp_scfm_upload').click()
+        sleep(short)
+        util_methods.uploadFile('jpg')
+        sleep(long)
+        print("上传封面ok")
+
+        # 系列的选择
+        # 选择标签，
+        tags = self.driver.find_element_by_class_name('lm-seriesbox')
+        taglist = tags.find_elements_by_class_name('lm-series')
+        # 点击第一个
+        taglist[0].click()
+        print("系列的选择ok")
+
+        # 标签的选择
+        # 选择标签，
+        tags = self.driver.find_element_by_class_name('lm-labelbox')
+        taglist = tags.find_elements_by_class_name('lm-label')
+        # 点击第一个
+        taglist[0].click()
+        print("标签的选择ok")
+
+        # 输入价格
+        self.driver.find_element_by_id('courseprice').send_keys('0.01')
+        print("输入价格ok")
+
+        # 输入介绍内容
+        self.driver.find_element_by_id('wd-editeditbox_courseintro').send_keys(name_str)
+        # 上传内容介绍的图片
+        self.driver.find_element_by_id('courseintro_insertimage').click()
+        sleep(short)
+        util_methods.uploadFile('jpg')
+        sleep(long)
+        print("输入介绍内容格ok")
+
+        # 选择讲师
+        # 点击添加讲师
+        self.driver.find_element_by_id('spgl_tjjs').click()
+        sleep(short)
+        teacher = self.driver.find_elements_by_class_name('js-yxz-box')
+        teacher[0].click()
+        sleep(short)
+        # 确定
+        self.driver.find_element_by_id('xzjs_qd').click()
+        print("点击添加讲师ok")
+
+        if type1 == 'weike'or type2 == 'weike':
+        # 选择微课
+            self.driver.find_element_by_id('wd_checkBox_fbwk_01').click()
+        if type1 == 'free' or type2 == 'free':
+        # 选择免费
+            self.driver.find_element_by_id('wd_checkBox_nomoney_0').click()
+
+        # 点击保存
+        self.driver.find_element_by_id('spgl_bc').click()
+        print("点击保存ok")
+
+        # 点击返回列表
+        self.driver.find_element_by_id('hp-ret').click()

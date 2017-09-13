@@ -12,8 +12,12 @@ short_wait = 1*rate
 # 生产环境是否可以用测试环境的dns？ （大部分都可以，在线客服不可以）
 pro_dns_ok_used_at_test = True
 
+# cookie保存的文件夹和名字
 cookieSavedFile = "business"
 cookieTxtName = 'cookies.txt'
+
+# log保存的地方
+log_file = 'test_log.txt'
 
 # 是否打印日志
 printLog = True
@@ -23,3 +27,4 @@ generateReport = False
 
 # 是否在控制台输出日志
 outputLog = True
+
