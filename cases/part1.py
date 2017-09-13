@@ -133,6 +133,7 @@ class StudyManage(TestBase):
         logging.info("完成系列选择")
 
     # 新建视频第三部分 - 标签
+    @unittest.skipIf(True, 'test')
     def test0123_new_video(self):
         Login(self.driver, adminLogin, admin['name'], admin['pwd'])
         sleep(ave)
@@ -140,6 +141,7 @@ class StudyManage(TestBase):
         # 进入新建页面
         self.driver.find_element_by_id('spgl_tj').click()
         sleep(ave)
+        sleep(short)
         # 标签的选择
         # 选择标签，
         tags = self.driver.find_element_by_class_name('lm-labelbox')
@@ -345,6 +347,45 @@ class StudyManage(TestBase):
         self.assertTrue(self.driver.title == '教材管理-云上国学', msg='验证失败，页面未跳转到教材管理 page redirect failed')
         sleep(ave)
         sleep(ave)
+
+    #  新增教材
+    # @unittest.skip(True)
+    def test0131_new_book(self):
+        # 获取随机名字
+        name_str = util_methods.getPoem()
+        name_str_ls = util_methods.splitPoem(name_str)
+        sleep(ave)
+
+        # 登录
+        Login(self.driver, adminLogin, admin['name'], admin['pwd'])
+        sleep(ave)
+        self.driver.find_element_by_id('jcgl').click()
+        sleep(ave)
+        print("进入教材管理ok")
+
+        # 点击新建
+        self.driver.find_element_by_id('jc_tj').click()
+        sleep(ave)
+
+        # # 上传教材
+        # self.driver.find_element_by_id('uploadbtn_upload').click()
+        # sleep(ave)
+        # util_methods.uploadFile('pdf')
+        # sleep(long)
+        # print('上传文件ok')
+        #
+        # # 输入教材名字
+        # self.driver.find_element_by_id('wd_checkBox_isused_1').click()
+        # self.driver.find_element_by_id('checkcoursename').send_keys(name_str_ls[0])
+        # sleep(short)
+        # print('输入教材名字')
+
+        # 选择分类
+        # 点击第一个分类框
+        self.driver.find_element_by_id('code_coursecategory1').click()
+        cat = self.driver.find_element_by_id('dmbody')
+        cat.find_elements_by_tag_name('tr').click()
+
 
     # 学习管理 - 直播管理
     @unittest.skip(True)
