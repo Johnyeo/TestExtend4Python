@@ -321,9 +321,12 @@ class StudyManage(TestBase):
 
         # 点击保存
         self.driver.find_element_by_id('spgl_bc').click()
+        sleep(long)
+        print('保存完毕')
 
         # 点击返回列表
         self.driver.find_element_by_id('hp-ret').click()
+        sleep(ave)
 
         # 验证课程是否创建成功
         table = self.driver.find_element_by_id('spgl_table')
@@ -349,7 +352,7 @@ class StudyManage(TestBase):
         sleep(ave)
 
     #  新增教材
-    # @unittest.skip(True)
+    @unittest.skip(True, 'test')
     def test0131_new_book(self):
         # 获取随机名字
         name_str = util_methods.getPoem()
@@ -367,28 +370,81 @@ class StudyManage(TestBase):
         self.driver.find_element_by_id('jc_tj').click()
         sleep(ave)
 
-        # # 上传教材
-        # self.driver.find_element_by_id('uploadbtn_upload').click()
-        # sleep(ave)
-        # util_methods.uploadFile('pdf')
-        # sleep(long)
-        # print('上传文件ok')
-        #
-        # # 输入教材名字
-        # self.driver.find_element_by_id('wd_checkBox_isused_1').click()
-        # self.driver.find_element_by_id('checkcoursename').send_keys(name_str_ls[0])
-        # sleep(short)
-        # print('输入教材名字')
+        # 上传教材
+        self.driver.find_element_by_id('uploadbtn_upload').click()
+        sleep(ave)
+        util_methods.uploadFile('pdf')
+        sleep(long)
+        print('上传文件ok')
+
+        # 输入教材名字
+        self.driver.find_element_by_id('wd_checkBox_isused_1').click()
+        self.driver.find_element_by_id('checkcoursename').send_keys(name_str_ls[0])
+        sleep(short)
+        print('输入教材名字')
 
         # 选择分类
         # 点击第一个分类框
         self.driver.find_element_by_id('code_coursecategory1').click()
-        cat = self.driver.find_element_by_id('dmbody')
-        cat.find_elements_by_tag_name('tr').click()
+        cat = self.driver.find_element_by_id('dmBody')
+        options = cat.find_elements_by_tag_name('tr')
+        options[0].click()
+        # 第二个
+        self.driver.find_element_by_id('code_coursecategory2').click()
+        cat = self.driver.find_element_by_id('dmBody')
+        options = cat.find_elements_by_tag_name('tr')
+        options[0].click()
+        # 第三个
+        self.driver.find_element_by_id('code_coursecategory3').click()
+        cat = self.driver.find_element_by_id('dmBody')
+        options = cat.find_elements_by_tag_name('tr')
+        options[0].click()
 
+        # 选择标签
+        tags = self.driver.find_element_by_class_name('lm-labelbox')
+        taglist = tags.find_elements_by_class_name('lm-label')
+        # 点击第一个
+        taglist[0].click()
+        print("标签的选择ok")
+
+        # 输入价格
+        self.driver.find_element_by_id('courseprice').send_keys('0.01')
+        print("输入价格ok")
+
+        # 输入介绍内容
+        self.driver.find_element_by_id('wd-editeditbox_courseintro').send_keys(name_str)
+        # 上传内容介绍的图片
+        self.driver.find_element_by_id('courseintro_insertimage').click()
+        sleep(short)
+        util_methods.uploadFile('jpg')
+        sleep(long)
+        print("输入介绍内容格ok")
+
+        # 输入作者
+        self.driver.find_element_by_id('author').send_keys(name_str_ls[1])
+        sleep(short)
+        print('输入作者')
+
+        # 点击保存
+        self.driver.find_element_by_id('jcgl_bc').click()
+        sleep(long)
+
+        # 点击返回列表
+        self.driver.find_element_by_id('hp-ret').click()
+        sleep(ave)
+
+        # 验证课程是否创建成功
+        table = self.driver.find_element_by_id('spgl_table')
+        # 每一行是一个tr
+        trs = table.find_elements_by_tag_name('tr')
+        # 第一行是标题， 正文从tr 1 开始。 td是列。
+        tds = trs[1].find_elements_by_tag_name('td')
+        name = tds[1].text
+
+        self.assertEqual(name, name_str,"教材 未被查询到创建失败 book created failed")
 
     # 学习管理 - 直播管理
-    @unittest.skip(True)
+    @unittest.skip(True,'test')
     def test0140_new_book(self):
         # 登录
         Login(self.driver, adminLogin, admin['name'], admin['pwd'])
@@ -398,6 +454,79 @@ class StudyManage(TestBase):
         logging.info('hello')
         self.assertTrue(self.driver.title == '直播管理-云上国学', msg='验证失败，页面未跳转到直播管理 page redirect failed')
         sleep(ave)
+
+    #  新增直播
+    @unittest.skip(True, 'test')
+    def test0141_new_book(self):
+        # 获取随机名字
+        name_str = util_methods.getPoem()
+        name_str_ls = util_methods.splitPoem(name_str)
+        sleep(ave)
+
+        # 登录
+        Login(self.driver, adminLogin, admin['name'], admin['pwd'])
+        sleep(ave)
+        self.driver.find_element_by_id('zbgl').click()
+        sleep(ave)
+        print("进入直播管理ok")
+
+        # 点击新建
+        self.driver.find_element_by_id('zbgl_xj').click()
+        sleep(ave)
+
+        # 输入直播名字
+        self.driver.find_element_by_id('coursename').send_keys(name_str_ls[0])
+        sleep(short)
+        print('输入直播名字')
+
+        # 选择标签
+        tags = self.driver.find_element_by_class_name('lm-labelbox')
+        taglist = tags.find_elements_by_class_name('lm-label')
+        # 点击第一个
+        taglist[0].click()
+        print("标签的选择ok")
+
+        # 输入价格
+        self.driver.find_element_by_id('courseprice').send_keys('0.01')
+        print("输入价格ok")
+
+        # 输入介绍内容
+        self.driver.find_element_by_id('wd-editeditbox_courseintro').send_keys(name_str)
+        # 上传内容介绍的图片
+        self.driver.find_element_by_id('courseintro_insertimage').click()
+        sleep(short)
+        util_methods.uploadFile('jpg')
+        sleep(long)
+        print("输入介绍内容格ok")
+
+        # 输入作者
+        self.driver.find_element_by_id('author').send_keys(name_str_ls[1])
+        sleep(short)
+        print('输入作者')
+
+        # 点击保存
+        self.driver.find_element_by_id('jcgl_bc').click()
+        sleep(long)
+
+        # 点击返回列表
+        self.driver.find_element_by_id('hp-ret').click()
+        sleep(ave)
+
+        # 验证课程是否创建成功
+        table = self.driver.find_element_by_id('spgl_table')
+        # 每一行是一个tr
+        trs = table.find_elements_by_tag_name('tr')
+        # 第一行是标题， 正文从tr 1 开始。 td是列。
+        tds = trs[1].find_elements_by_tag_name('td')
+        name = tds[1].text
+
+        self.assertEqual(name, name_str,"教材 未被查询到创建失败 book created failed")
+
+
+    # 学习管理 - 直播管理
+    @unittest.skip(True)
+    def test0900_transCode(self):
+        pass
 
 
 if __name__ == "__main__":
