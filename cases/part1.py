@@ -18,7 +18,7 @@ ave = configs.ave_wait
 short = configs.short_wait
 long = configs.long_wait
 loginPass = True
-
+name = {}
 
 class StudyManage(TestBase):
     # 后台登录
@@ -237,11 +237,13 @@ class StudyManage(TestBase):
         except NoSuchElementException as e:
             print('标签%s未找到' % (labelname[i]))
 
-    # 价格，介绍，保存
+    # 价格，介绍，保存 整体走一遍
     @unittest.skipIf(True,'test')
     def test0126_new_video(self):
         name_str = util_methods.getPoem()
         name_str_ls = util_methods.splitPoem(name_str)
+        global name
+        name['video'] = name_str_ls[0]
 
         Login(self.driver, adminLogin, admin['name'], admin['pwd'])
         sleep(ave)
@@ -334,13 +336,13 @@ class StudyManage(TestBase):
         trs = table.find_elements_by_tag_name('tr')
         # 第一行是标题， 正文从tr 1 开始。 td是列。
         tds = trs[1].find_elements_by_tag_name('td')
-        name = tds[1].text
+        name_exp = tds[1].text
 
-        self.assertEqual(name, name_str,"视频未被查询到创建失败 video created failed")
+        self.assertEqual(name_exp, name_str,"视频未被查询到创建失败 video created failed")
 
 
     # 学习管理 - 教材管理
-    @unittest.skip(True)
+    @unittest.skipIf(True,'test')
     def test0130_new_book(self):
         # 登录
         Login(self.driver, adminLogin, admin['name'], admin['pwd'])
@@ -352,12 +354,14 @@ class StudyManage(TestBase):
         sleep(ave)
 
     #  新增教材
-    @unittest.skip(True, 'test')
+    @unittest.skipIf(True, 'test')
     def test0131_new_book(self):
         # 获取随机名字
         name_str = util_methods.getPoem()
         name_str_ls = util_methods.splitPoem(name_str)
         sleep(ave)
+        global name
+        name['book']=name_str_ls[0]
 
         # 登录
         Login(self.driver, adminLogin, admin['name'], admin['pwd'])
@@ -439,13 +443,13 @@ class StudyManage(TestBase):
         trs = table.find_elements_by_tag_name('tr')
         # 第一行是标题， 正文从tr 1 开始。 td是列。
         tds = trs[1].find_elements_by_tag_name('td')
-        name = tds[1].text
+        name_exp = tds[1].text
 
-        self.assertEqual(name, name_str,"教材 未被查询到创建失败 book created failed")
+        self.assertEqual(name_exp, name_str,"教材 未被查询到创建失败 book created failed")
 
     # 学习管理 - 直播管理
-    @unittest.skip(True,'test')
-    def test0140_new_book(self):
+    @unittest.skipIf(True,'test')
+    def test0140_new_broadcast(self):
         # 登录
         Login(self.driver, adminLogin, admin['name'], admin['pwd'])
         sleep(ave)
@@ -456,12 +460,14 @@ class StudyManage(TestBase):
         sleep(ave)
 
     #  新增直播
-    @unittest.skip(True, 'test')
-    def test0141_new_book(self):
+    @unittest.skipIf(True, 'test')
+    def test0141_new_broadcast(self):
         # 获取随机名字
         name_str = util_methods.getPoem()
         name_str_ls = util_methods.splitPoem(name_str)
         sleep(ave)
+        global name
+        name['broadcast'] = name_str_ls[0]
 
         # 登录
         Login(self.driver, adminLogin, admin['name'], admin['pwd'])
@@ -518,13 +524,98 @@ class StudyManage(TestBase):
         trs = table.find_elements_by_tag_name('tr')
         # 第一行是标题， 正文从tr 1 开始。 td是列。
         tds = trs[1].find_elements_by_tag_name('td')
-        name = tds[1].text
+        name_exp = tds[1].text
 
-        self.assertEqual(name, name_str,"教材 未被查询到创建失败 book created failed")
+        self.assertEqual(name_exp, name_str,"直播 未被查询到创建失败 book created failed")
+
+    # 学习管理 - 培训管理
+    @unittest.skipIf(True, 'test')
+    def test0150_new_training(self):
+        # 登录
+        Login(self.driver, adminLogin, admin['name'], admin['pwd'])
+        sleep(ave)
+        self.driver.find_element_by_id('pxgl').click()
+        sleep(ave)
+        self.assertTrue(self.driver.title == '培训管理-云上国学', msg='验证失败，页面未跳转到培训管理 page redirect failed')
+        sleep(ave)
+
+    #  新增培训
+    @unittest.skipIf(False, 'test')
+    def test0151_new_training(self):
+        # 获取随机名字
+        name_str = util_methods.getPoem()
+        name_str_ls = util_methods.splitPoem(name_str)
+        sleep(ave)
+        global name
+        name['broadcast'] = name_str_ls[0]
+
+        # 登录
+        Login(self.driver, adminLogin, admin['name'], admin['pwd'])
+        sleep(ave)
+        self.driver.find_element_by_id('pxgl').click()
+        sleep(ave)
+        print("进入培训管理ok")
+
+        # 点击新建
+        self.driver.find_element_by_id('px_add').click()
+        sleep(ave)
+
+        # 输入直播名字
+        self.driver.find_element_by_id('pxjs_mc').send_keys(name_str_ls[0])
+        sleep(short)
+        print('输入培训名字')
+
+        # 上传封面
+        self.driver.find_element_by_id('pxjs_sc_upload').click()
+        sleep(short)
+        util_methods.uploadFile('jpg')
+        sleep(long)
+        print("上传封面ok")
+
+        # 输入介绍内容
+        self.driver.find_element_by_id('wd-editeditbox_pxjs').send_keys(name_str)
+        # 上传内容介绍的图片
+        self.driver.find_element_by_id('pxjs_insertimage').click()
+        sleep(short)
+        util_methods.uploadFile('jpg')
+        sleep(long)
+        print("输入介绍内容格ok")
+
+        # 输入课程体系
+        self.driver.find_element_by_id('wd-editeditbox_kctx').send_keys(name_str)
+        # 上传内容介绍的图片
+        self.driver.find_element_by_id('kctx_insertimage').click()
+        sleep(short)
+        util_methods.uploadFile('jpg')
+        sleep(long)
+        print("输入介绍内容格ok")
+
+        # 选择讲师
+        self.driver.find_element_by_id('px_tjjs').click()
+        sleep(ave)
+        teachers = self.driver.find_elements_by_class_name('js-yxz-box')
+        teachers[0].click()
+        self.driver.find_element_by_id('xzjs_qd').click()
+        sleep(short)
+
+        # 点击保存
+        self.driver.find_element_by_id('px_bc').click()
+        sleep(long)
+
+        # 点击返回列表
+        self.driver.find_elements_by_class_name('hp-ret').click()
+        sleep(ave)
+
+        # 验证课程是否创建成功
+        table = self.driver.find_element_by_id('pxgl_table')
+        # 第一行是标题， 正文从tr 1 开始。 td是列。
+        name_exp = table.find_elements_by_class_name('pxgl-mc').text()
+
+        self.assertEqual(name_exp, name_str, "培训 未被查询到创建失败 book created failed, exp:%s, act:%s" %(name_exp,name_str))
 
 
-    # 学习管理 - 直播管理
-    @unittest.skip(True)
+    # 检查是否转码成功
+    @unittest.skipIf(True, 'test')
     def test0900_transCode(self):
         pass
 
