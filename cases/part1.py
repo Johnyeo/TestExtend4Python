@@ -539,8 +539,8 @@ class StudyManage(TestBase):
         self.assertTrue(self.driver.title == '培训管理-云上国学', msg='验证失败，页面未跳转到培训管理 page redirect failed')
         sleep(ave)
 
-    #  新增培训
-    @unittest.skipIf(False, 'test')
+    #  新增培训 - 第一页
+    @unittest.skipIf(True, 'test')
     def test0151_new_training(self):
         # 获取随机名字
         name_str = util_methods.getPoem()
@@ -603,15 +603,189 @@ class StudyManage(TestBase):
         sleep(long)
 
         # 点击返回列表
-        self.driver.find_elements_by_class_name('hp-ret').click()
+        self.driver.find_element_by_class_name('hp-ret').click()
         sleep(ave)
 
         # 验证课程是否创建成功
         table = self.driver.find_element_by_id('pxgl_table')
         # 第一行是标题， 正文从tr 1 开始。 td是列。
-        name_exp = table.find_elements_by_class_name('pxgl-mc').text()
+        name_exp = table.find_element_by_class_name('pxgl-mc').text
 
         self.assertEqual(name_exp, name_str, "培训 未被查询到创建失败 book created failed, exp:%s, act:%s" %(name_exp,name_str))
+
+    #  新增培训 - 第二页
+    @unittest.skipIf(False, 'test')
+    def test0152_new_training(self):
+        # 登录
+        Login(self.driver, adminLogin, admin['name'], admin['pwd'])
+        sleep(ave)
+        self.driver.find_element_by_id('pxgl').click()
+        sleep(ave)
+        print("进入培训管理ok")
+
+    # 选择第一个培训（刚刚创建的）
+        trains = self.driver.find_elements_by_class_name('pxgl-mc')
+        trains[0].click()
+        sleep(ave)
+
+    # 进入第二页
+        self.driver.find_element_by_id('px_next').click()
+        sleep(ave)
+
+    # 新建版块
+        self.driver.find_element_by_id('px_xjbk').click()
+
+    # 新建内容
+        self.driver.find_element_by_id('px_xjnr').click()
+        sleep(ave)
+    #   新建内容 - 添加视频
+        table = self.driver.find_element_by_id('splist_table')
+        # 全选
+        table.find_element_by_id('wd_checkBox_wdtablecheckall').click()
+        # 取消全选
+        table.find_element_by_id('wd_checkBox_wdtablecheckall').click()
+        sleep(short)
+        # 选择两个
+        checkboxes = table.find_elements_by_class_name('wd-checkbox-check')
+        checkboxes[1].click()
+        checkboxes[2].click()
+        # 确认选择
+        self.driver.find_element_by_id('xzsp_qd').click()
+        sleep(long)
+
+    # 新建内容
+        self.driver.find_element_by_id('px_xjnr').click()
+        sleep(ave)
+    #   新建内容 - 添加练习题
+        self.driver.find_element_by_id('nrlx_lxt').click()
+        sleep(long)
+        # 点击加入试题篮
+        button = self.driver.find_elements_by_class_name()
+        # 选择三道题
+        button[0].click()
+        button[1].click()
+        button[2].click()
+        # 取消选择
+        button[0].click()
+        # 确定
+        self.driver.find_element_by_id('stl_qd').click()
+        sleep(ave)
+        # 再次确定（此处可以更详细的测试但是略过）
+        self.driver.find_element_by_id('lxt_bjqd').click()
+
+    # 下一步（点击下一步就相当于保存了）
+        self.driver.find_element_by_id('px_next').click()
+    # 返回列表
+        self.driver.find_element_by_class_name('hp-ret').click()
+
+    #  新增培训 - 第三页
+    @unittest.skipIf(False, 'test')
+    def test0153_new_training(self):
+
+        # 登录
+        Login(self.driver, adminLogin, admin['name'], admin['pwd'])
+        sleep(ave)
+        self.driver.find_element_by_id('pxgl').click()
+        sleep(ave)
+        print("进入培训管理ok")
+
+    # 选择第一个培训（刚刚创建的）
+        trains = self.driver.find_elements_by_class_name('pxgl-mc')
+        trains[0].click()
+        sleep(ave)
+
+    # 进入第三页
+        self.driver.find_element_by_id('px_next').click()
+        sleep(ave)
+        self.driver.find_element_by_id('px_next').click()
+        sleep(ave)
+
+    # 填写证书名称（直接写死比较方便。因为可以重复）
+        self.driver.find_element_by_id('jysz_zsmc').send_keys('【测试】证书名字')
+
+    # 选择试卷
+        self.driver.find_element_by_id('jysz_xzsj').click()
+        # 弹出窗口
+        window = self.driver.find_element_by_id('pxnr_xzsj')
+        radio_buttons = window.find_elements_by_class_name('wd-radio-check')
+        # 点击第一个
+        radio_buttons[0].click()
+        # 确定
+        window.find_element_by_id('xzsj_qd')
+
+    # 选择结业证书模板
+        self.driver.find_element_by_id('jysz_xzmb')
+        # 弹出窗口
+        window = self.driver.find_element_by_id('pxnr_xzmb')
+        radio_buttons = window.find_elements_by_class_name('wd-radio-check')
+        # 点击第一个
+        radio_buttons[0].click()
+        # 确定
+        window.find_element_by_id('xzmb_qd')
+
+    # 下一步（点击下一步就相当于保存了）
+        self.driver.find_element_by_id('px_next').click()
+    # 返回列表
+        self.driver.find_element_by_class_name('hp-ret').click()
+
+    #  新增培训 - 第四页
+    @unittest.skipIf(False, 'test')
+    def test0154_new_training(self):
+        # 登录
+        Login(self.driver, adminLogin, admin['name'], admin['pwd'])
+        sleep(ave)
+        self.driver.find_element_by_id('pxgl').click()
+        sleep(ave)
+        print("进入培训管理ok")
+
+    # 选择第一个培训（刚刚创建的）
+        trains = self.driver.find_elements_by_class_name('pxgl-mc')
+        trains[0].click()
+        sleep(ave)
+
+    # 进入第四页
+        self.driver.find_element_by_id('px_next').click()
+        sleep(ave)
+        self.driver.find_element_by_id('px_next').click()
+        sleep(ave)
+        self.driver.find_element_by_id('px_next').click()
+        sleep(ave)
+
+    # 都选择免费
+        self.driver.find_element_by_id('wd_checkBox_dj_kc_free').click()
+        self.driver.find_element_by_id('wd_checkBox_dj_jyks_free').click()
+        # self.driver.find_element_by_id('wd_checkBox_dj_rzks_free').click()
+
+    # 认证输入0.01元
+        self.driver.find_element_by_id('dj_rzks').send_keys('0.01')
+    # 保存
+        self.driver.find_element_by_id('px_bc').click()
+        sleep(ave)
+    # 返回列表
+        self.driver.find_element_by_class_name('hp-ret').click()
+        sleep(ave)
+
+    # 把培训发布
+    @unittest.skipIf(True, 'test')
+    def test0155_new_training(self):
+        # 选择第一个培训（刚刚创建的）
+        trains = self.driver.find_elements_by_class_name('pxgl-mc')
+        name_str = trains[0].text
+        trains[0].click()
+        sleep(ave)
+
+        # 进入第四页
+        self.driver.find_element_by_id('px_next').click()
+        sleep(ave)
+        self.driver.find_element_by_id('px_next').click()
+        sleep(ave)
+        self.driver.find_element_by_id('px_next').click()
+        sleep(ave)
+
+    # 点击发布按钮
+        self.driver.find_element_by_id('px_fb').click()
+
+    # 验证是否发布成功
 
 
     # 检查是否转码成功

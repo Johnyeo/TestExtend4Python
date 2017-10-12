@@ -7,6 +7,8 @@ import time
 import datetime
 
 import subprocess
+
+import simplejson
 import wmi
 from urllib import request
 
@@ -94,5 +96,20 @@ def splitPoem(tar_str):
     result = tar_str.split()
     return result
 
+# 将记录下来的名字的字典，用simplejosn转换成字符串，然后写入namelist.txt
+def recordName(self, name_dict):
+    simplejson.dumps(name_dict )
+    with open("namelist.txt",'w') as f:
+        f.write(name_dict)
+    print("writing, the old namelist will be overwrite")
 
+# 通过key获取字典里的值
+def fetchName(self, key):
+    with open("namelist.txt","r") as f:
+        content = f.readline()
+    name_dict = simplejson.loads()
+    if name_dict.has_key(key):
+        return  name_dict[key]
+    else:
+        print ("参数错误，key不在字典中 key doesn't exist")
 
