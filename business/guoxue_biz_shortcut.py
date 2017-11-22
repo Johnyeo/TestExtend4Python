@@ -40,6 +40,17 @@ class Login(object):
             self.driver.find_element_by_id('hp-qtdlBtn').click()
             sleep(2)
 
+
+class LoginAndOpen(object):
+    def __init__(self, id, driver, url, name, password='111111',):
+        Login(driver,url,name,password)
+        driver.find_element_by_id(id).click()
+        sleep(2)
+
+
+
+
+
 COOKIES = []
 
 class UseCookie(object):

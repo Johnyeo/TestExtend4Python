@@ -79,3 +79,4 @@ def checkDNS(tarEnv_str):
             print(prompt_str % tarEnv_dns)
         except:
             print("DNS切换失败，请确认以管理员身份运行。")
+

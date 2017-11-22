@@ -23,8 +23,10 @@ log_file = 'test_log.txt'
 printLog = True
 
 # 是否生成测试报告
-generateReport = False
+generateReport = True
 
 # 是否在控制台输出日志
 outputLog = True
 
+# 网上抓还是本地获取
+onlinePoem = False

@@ -9,9 +9,11 @@ import datetime
 import subprocess
 
 import simplejson
+import sys
 import wmi
 from urllib import request
 
+from settings import configs
 
 record_list = []
 ave_wait = 1
@@ -44,6 +46,8 @@ def uploadFile(type, file_path = None):
             openProjectFileAt(current, "business\\uploadJpg.exe")
         elif type == 'pdf':
             openProjectFileAt(current, "business\\uploadPdf.exe")
+        elif type == 'png':
+            openProjectFileAt(current, "business\\uploadPng.exe")
         else:
             print("material里面没有这个文件，请确认参数")
     else:
@@ -58,27 +62,31 @@ def gen_name(param):
 # 从古诗文网的名句页爬取古诗,第一个参数是页数，第二个参数是条数。p如果超过范围，则随机一个。num大于1则生产一个list
 # 爬取古诗的作为文件的随机名字
 def getPoem(p = 0, num = 1):
-    #  p是古诗文网的页数,114页一共
-    #  如果p = 0 则传入随机数。如果p = 具体数字则传入具体的数字
-    if  p > 114 or p <=0:
-        pageRange = range(1, 115)
-        p = random.sample(pageRange, 1)
-        p = str(p[0])
+    # 选择是从本地读还是从网上抓
+    if configs.onlinePoem == True:
+        #  p是古诗文网的页数,114页一共
+        #  如果p = 0 则传入随机数。如果p = 具体数字则传入具体的数字
+        if  p > 114 or p <=0:
+            pageRange = range(1, 115)
+            p = random.sample(pageRange, 1)
+            p = str(p[0])
+        else:
+            p = str(p)
+        url = 'http://so.gushiwen.org/mingju/Default.aspx?p=%s&c=&t='% p
+        response = request.urlopen(url)
+        page = response.read()
+        page = page.decode('utf-8')
+        pattern = re.compile(r'[\u4e00-\u9fa5].*(?=</a><span )')
+        match_list = re.findall(pattern, page, )
+        result = random.sample(match_list, num)
+        if num == 1:
+            return result[0]
+        elif num <= 0:
+            return match_list
+        else:
+            return result
     else:
-        p = str(p)
-    url = 'http://so.gushiwen.org/mingju/Default.aspx?p=%s&c=&t='% p
-    response = request.urlopen(url)
-    page = response.read()
-    page = page.decode('utf-8')
-    pattern = re.compile(r'[\u4e00-\u9fa5].*(?=</a><span )')
-    match_list = re.findall(pattern, page, )
-    result = random.sample(match_list, num)
-    if num == 1:
-        return result[0]
-    elif num <= 0:
-        return match_list
-    else:
-        return result
+        return getLocalPoem(num)
 
 def getCertainLength(tar_str,num = 0):
     if num <= 0:
@@ -113,3 +121,11 @@ def fetchName(self, key):
     else:
         print ("参数错误，key不在字典中 key doesn't exist")
 
+def getLocalPoem(n=1):
+    currentpath = os.getcwd()
+    new = os.path.abspath(os.path.join(currentpath, os.pardir))  # 获取上一级目录
+    new2 = os.path.join(new, "business\\mingju.txt")  # 拼接上脚本的路径
+    with open(new2,'r') as f:
+        result = f.readlines()
+    res = random.sample(result,n)
+    return res[0]
